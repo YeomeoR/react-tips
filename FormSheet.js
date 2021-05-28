@@ -15,6 +15,10 @@ const FormSheet = () => {
     setModalIsOpen(true)
   };
 
+  const closeModalHandler = () => {
+    modalIsOpen && setModalIsOpen(false);
+  };
+
 
   const  calculator = () => {
     let bill = totalBill;
@@ -30,9 +34,7 @@ const FormSheet = () => {
     
     
   }
-  function closeModalHandler() {
-    setModalIsOpen(true)
-  }
+ 
 
 
 
@@ -103,7 +105,7 @@ const FormSheet = () => {
           tipAmount={tipAmount}
           submitHandler={submitHandler}
           onCancel={closeModalHandler}
-        />
+        /> 
       )}
     </>
   );
