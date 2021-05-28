@@ -1,43 +1,56 @@
 import React, { useState } from 'react';
-import { Form, Button, Modal } from 'react-bootstrap';
-
+import { Form, Button } from 'react-bootstrap';
+import Modal from '../components/modal.component';
 
 const FormSheet = () => {
   const [totalBill, setTotalBill] = useState('');
   const [diners, setDiners] = useState('');
   const [tip, setTip] = useState('');
-   const [show, setShow] = useState(false);
+  const [tipAmount, setTipAmount] = useState('');
 
-   const handleClose = () => setShow(false);
-   const handleShow = () => setShow(true);
- 
-  
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-   const submitHandler = () => {
+
+  const submitHandler = () => {
+    setModalIsOpen(true)
+  };
+
+
+  const  calculator = () => {
     let bill = totalBill;
     let numDiners = diners;
-    let tipAmount = ((totalBill / diners) * (tip/100)).toFixed(2);
+    let tipAmount = setTipAmount(((totalBill / diners) * (tip / 100)).toFixed(2));
     let totalTip = (tipAmount * numDiners).toFixed(2);
-      console.log(`Bill: ${bill}; Individual tip: ${tipAmount}; Total Tip: ${totalTip} `)
-    setTotalBill('');
-    setDiners('');
-    setTip('');
-      //call the modal with vars as params
-    handleShow(bill, numDiners, tipAmount, totalTip);
+    let totalIndividualBill = (totalBill / diners) + tipAmount
+    
+    console.log(
+      `Bill: ${bill}; Individual tip: ${tipAmount}; Total Tip: ${totalTip}; Total individual bill = ${totalIndividualBill} `,
+    );
+    setModalIsOpen(true);
+    
+    
+  }
+  function closeModalHandler() {
+    setModalIsOpen(true)
   }
 
-  
+
+
 
   return (
     <>
       <Form
+        className="form"
         onSubmit={() => {
           submitHandler();
         }}
       >
         <Form.Group controlId="exampleForm.ControlInput1">
-          <Form.Label>Bill Total</Form.Label>
+          <Form.Label style={{ color: 'white', background: 'rgba(0,0,0,0.4)' }}>
+            Bill Total in £ (GBP)
+          </Form.Label>
           <Form.Control
+            style={{ textAlign: 'center' }}
             type="number"
             placeholder="Total Bill £-GBP"
             value={totalBill}
@@ -47,8 +60,11 @@ const FormSheet = () => {
           />
         </Form.Group>
         <Form.Group controlId="exampleForm.ControlInput1">
-          <Form.Label>Number of Diners</Form.Label>
+          <Form.Label style={{ color: 'white', background: 'rgba(0,0,0,0.4)' }}>
+            Number of Diners
+          </Form.Label>
           <Form.Control
+            style={{ textAlign: 'center' }}
             type="number"
             placeholder="Number of Diners"
             value={diners}
@@ -58,8 +74,11 @@ const FormSheet = () => {
           />
         </Form.Group>
         <Form.Group controlId="exampleForm.ControlInput1">
-          <Form.Label>Tip Percentage %</Form.Label>
+          <Form.Label style={{ color: 'white', background: 'rgba(0,0,0,0.4)' }}>
+            Tip Percentage %
+          </Form.Label>
           <Form.Control
+            style={{ textAlign: 'center' }}
             type="number"
             placeholder="How good was the service?"
             value={tip}
@@ -69,24 +88,24 @@ const FormSheet = () => {
           />
         </Form.Group>
 
-        <Button onClick={submitHandler}>Calculate</Button>
+        <Button
+          style={{ width: '100%', marginLeft: '0', marginTop: '15px' }}
+          onClick={calculator}
+        >
+          Calculate
+        </Button>
       </Form>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Break-It-Down!</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* need to put the variables in here */}
-          
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {modalIsOpen && (
+        <Modal
+          bill={totalBill}
+          tip={tip}
+          diners={diners}
+          tipAmount={tipAmount}
+          submitHandler={submitHandler}
+          onCancel={closeModalHandler}
+        />
+      )}
     </>
   );
 };
-
 export default FormSheet;
